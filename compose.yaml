@@ -1,4 +1,3 @@
-# Local production-like stack. Credentials here are for local development only.
 x-app: &app
   build: .
   image: django-api:local
@@ -17,14 +16,13 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql # 18+ images keep data in a versioned subdirectory
+      - pgdata:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U app -d app"]
       interval: 5s
       timeout: 3s
       retries: 10
 
-  # One-shot: migrations run once, before any web replica starts.
   migrate:
     <<: *app
     command: ["python", "manage.py", "migrate", "--noinput"]

@@ -1,4 +1,3 @@
-# Allowlist: nothing enters the build context unless named here (keeps .env and .git out).
 *
 !pyproject.toml
 !uv.lock

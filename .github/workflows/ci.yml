@@ -26,7 +26,6 @@ jobs:
           --health-timeout 3s
           --health-retries 10
     env:
-      # Throwaway values for the CI database; production runs with DEBUG unset (false).
       SECRET_KEY: ci-only-key-not-a-secret-0123456789-abcdefghijklmnopqrstuvwxyz
       DATABASE_URL: postgresql://app:app@127.0.0.1:5432/app
       ALLOWED_HOSTS: localhost

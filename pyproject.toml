@@ -28,13 +28,14 @@ package = false
 [tool.ruff]
 target-version = "py314"
 line-length = 100
-extend-exclude = ["**/migrations"]  # generated code
+extend-exclude = ["**/migrations"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "S", "DJ", "SIM", "C4", "PT", "PERF", "DTZ", "ANN", "RUF"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101"]
+"gunicorn.conf.py" = ["S108"]
 
 [tool.mypy]
 python_version = "3.14"
@@ -49,7 +50,7 @@ django_settings_module = "config.settings"
 DJANGO_SETTINGS_MODULE = "config.settings"
 testpaths = ["tests"]
 addopts = "--cov --cov-report=term-missing"
-filterwarnings = ["error"]  # deprecations fail the build instead of piling up
+filterwarnings = ["error"]
 
 [tool.coverage.run]
 source = ["apps", "config"]

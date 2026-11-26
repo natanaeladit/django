@@ -5,8 +5,6 @@ from typing import override
 
 
 class JsonFormatter(logging.Formatter):
-    """One JSON object per line on stdout, the shape log collectors expect."""
-
     @override
     def format(self, record: logging.LogRecord) -> str:
         payload = {

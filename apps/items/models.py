@@ -8,7 +8,7 @@ class Item(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ("id",)  # stable order, required for correct pagination
+        ordering = ("id",)
 
     def __str__(self) -> str:
         return self.name

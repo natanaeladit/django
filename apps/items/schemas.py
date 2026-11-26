@@ -10,8 +10,6 @@ class ItemIn(Schema):
 
 
 class ItemPatch(Schema):
-    """Partial update. Omitted or null fields are left unchanged."""
-
     name: str | None = Field(default=None, min_length=1, max_length=200)
     description: str | None = None
 

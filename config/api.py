@@ -3,7 +3,6 @@ from ninja import NinjaAPI
 
 from apps.items.api import router as items_router
 
-# Authentication plugs in here: NinjaAPI(auth=...) protects every route.
 api = NinjaAPI(
     title="API",
     version="1.0.0",

@@ -1,5 +1,3 @@
-"""Typed, validated environment configuration. The process refuses to start if it is invalid."""
-
 from pathlib import Path
 
 from pydantic import PostgresDsn
@@ -15,7 +13,7 @@ class Env(BaseSettings):
     secret_key: str
     database_url: PostgresDsn
     debug: bool = False
-    allowed_hosts: str = ""  # comma-separated
+    allowed_hosts: str = ""
     secure_ssl_redirect: bool = True
     log_level: str = "INFO"
 

@@ -1,11 +1,6 @@
-"""Django settings. Every deploy-specific value comes from the environment (see config/env.py)."""
-
-from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 from config.env import env
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = env.secret_key
 DEBUG = env.debug
@@ -18,7 +13,6 @@ INSTALLED_APPS = [
     "apps.items",
 ]
 
-# API-only service: no sessions, cookies, CSRF or templates on the request path.
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -27,7 +21,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
-APPEND_SLASH = False  # a redirect would drop POST bodies
+APPEND_SLASH = False
+TEMPLATES = [{"BACKEND": "django.template.backends.django.DjangoTemplates"}]
 
 _db = urlsplit(str(env.database_url))
 DATABASES = {
@@ -38,10 +33,8 @@ DATABASES = {
         "PASSWORD": unquote(_db.password or ""),
         "HOST": _db.hostname or "",
         "PORT": _db.port or "",
-        # One persistent connection per worker thread: no reconnect per request.
         "CONN_MAX_AGE": 600,
         "CONN_HEALTH_CHECKS": True,
-        # Fail fast instead of hanging a worker (and the readiness probe) on an unreachable DB.
         "OPTIONS": {"connect_timeout": 5},
     }
 }
@@ -64,18 +57,18 @@ USE_I18N = False
 NINJA_PAGINATION_PER_PAGE = 50
 NINJA_PAGINATION_MAX_LIMIT = 100
 
-# Trust X-Forwarded-Proto. Only correct behind a proxy/load balancer that sets or strips it.
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 X_FRAME_OPTIONS = "DENY"
 if not DEBUG:
+    _plain_http_probe_paths = [r"^healthz$", r"^readyz$"]
     SECURE_SSL_REDIRECT = env.secure_ssl_redirect
-    SECURE_REDIRECT_EXEMPT = [r"^healthz$", r"^readyz$"]  # probes arrive over plain HTTP
+    SECURE_REDIRECT_EXEMPT = _plain_http_probe_paths
     SECURE_HSTS_SECONDS = 31_536_000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
-# No cookie-based auth exists, so there is nothing for CSRF middleware to protect.
-SILENCED_SYSTEM_CHECKS = ["security.W003"]
+_csrf_middleware_missing_check = "security.W003"
+SILENCED_SYSTEM_CHECKS = [_csrf_middleware_missing_check]
 
 LOGGING = {
     "version": 1,
