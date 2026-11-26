@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Django: runserver",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["runserver"],
+      "django": true,
+      "justMyCode": true,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      // The extension's bundled debugpy doesn't support Python 3.14; use the one from the dev dependencies.
+      "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter"
+    },
+    {
+      "name": "Pytest",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["tests"],
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter"
+    }
+  ]
+}
