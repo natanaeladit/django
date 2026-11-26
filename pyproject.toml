@@ -1,0 +1,58 @@
+[project]
+name = "django-api"
+version = "0.1.0"
+description = "Production Django REST API"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "django>=6.1,<6.2",
+    "django-ninja>=1.8,<2",
+    "gunicorn>=27,<28",
+    "psycopg[binary]>=3.3,<4",
+    "pydantic-settings>=2.16,<3",
+]
+
+[dependency-groups]
+dev = [
+    "django-stubs[compatible-mypy]>=6.1",
+    "pytest>=9.2",
+    "pytest-cov>=7.1",
+    "pytest-django>=4.14",
+    "ruff>=0.17",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+extend-exclude = ["**/migrations"]  # generated code
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "S", "DJ", "SIM", "C4", "PT", "PERF", "DTZ", "ANN", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+plugins = ["mypy_django_plugin.main", "pydantic.mypy"]
+exclude = ['^\.venv/']
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+testpaths = ["tests"]
+addopts = "--cov --cov-report=term-missing"
+filterwarnings = ["error"]  # deprecations fail the build instead of piling up
+
+[tool.coverage.run]
+source = ["apps", "config"]
+omit = ["*/migrations/*", "config/wsgi.py"]
+
+[tool.coverage.report]
+fail_under = 90

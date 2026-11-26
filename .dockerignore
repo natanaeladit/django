@@ -1,0 +1,9 @@
+# Allowlist: nothing enters the build context unless named here (keeps .env and .git out).
+*
+!pyproject.toml
+!uv.lock
+!manage.py
+!gunicorn.conf.py
+!config/
+!apps/
+**/__pycache__

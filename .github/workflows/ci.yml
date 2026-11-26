@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: app
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U app -d app"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      # Throwaway values for the CI database; production runs with DEBUG unset (false).
+      SECRET_KEY: ci-only-key-not-a-secret-0123456789-abcdefghijklmnopqrstuvwxyz
+      DATABASE_URL: postgresql://app:app@127.0.0.1:5432/app
+      ALLOWED_HOSTS: localhost
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy .
+      - run: uv run python manage.py check --deploy --fail-level WARNING
+      - run: uv run python manage.py makemigrations --check --dry-run
+      - run: uv run pytest
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: docker build -t django-api:ci .
